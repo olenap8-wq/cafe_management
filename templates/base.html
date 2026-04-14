@@ -2,22 +2,34 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>カフェ在庫管理</title>
+    <title>在庫管理</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<header>
-    <h1>☕ カフェ在庫管理</h1>
-    <nav>
-        <a href="/">商品一覧</a>
-        <a href="/products/new">商品登録</a>
-    </nav>
-</header>
+<div class="header">
+    <h1>在庫管理</h1>
 
-<main>
+    <div class="nav-buttons">
+        <a href="#">お客様</a>
+        <a href="#">申し送り</a>
+        <a href="/" class="active">在庫管理</a>
+    </div>
+</div>
+
+<div class="container">
     {% block content %}{% endblock %}
-</main>
+</div>
+
+<script>
+function openModal() {
+    document.getElementById("modal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+</script>
 
 </body>
 </html>

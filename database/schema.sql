@@ -39,6 +39,7 @@ CREATE TABLE products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     category TEXT,
+    price INTEGER,
     threshold INTEGER
 );
 CREATE TABLE inventory (
