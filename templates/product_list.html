@@ -7,7 +7,7 @@
     <div class="last-updated">
         最終更新：
         {% if last_updated %}
-            {{ last_updated[5:7]|int }}月{{ last_updated[8:10]|int }}日 {{ last_updated[11:13] }}:{{ last_updated[14:16] }}
+            {{ last_updated[5:7]|int }}月{{ last_updated[8:10]|int }}日 {{ last_updated[11:16] }}
         {% else %}
             なし
         {% endif %}
