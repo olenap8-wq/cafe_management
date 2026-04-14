@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>商品登録</h2>
+
+    <form action="/products" method="POST">
+        <label>商品名</label>
+        <input type="text" name="name" required>
+
+        <label>カテゴリ</label>
+        <input type="text" name="category">
+
+        <label>在庫アラート数</label>
+        <input type="number" name="threshold" value="5">
+
+        <label>初期在庫数</label>
+        <input type="number" name="quantity" value="0">
+
+        <button type="submit">登録する</button>
+    </form>
+</div>
+{% endblock %}

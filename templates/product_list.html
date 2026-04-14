@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>商品一覧</h2>
+
+    <table>
+        <tr>
+            <th>商品名</th>
+            <th>カテゴリ</th>
+            <th>在庫</th>
+            <th>アラート</th>
+        </tr>
+
+        {% for p in products %}
+        <tr>
+            <td>{{ p.name }}</td>
+            <td>{{ p.category }}</td>
+            <td>{{ p.quantity or 0 }}</td>
+            <td>
+                {% if p.quantity is not none and p.quantity <= p.threshold %}
+                    ⚠ 少ない
+                {% else %}
+                    OK
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
