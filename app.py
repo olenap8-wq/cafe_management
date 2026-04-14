@@ -1,5 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+
+def init_db():
+    with sqlite3.connect('cafe_management.db') as conn:
+        with open('database/schema.sql') as f:
+            conn.executescript(f.read())
+
 from datetime import datetime
 
 import os  # ← 追加
@@ -65,5 +71,9 @@ def create_product():
     return redirect(url_for("product_list"))
 
 
+import os
+
 if __name__ == "__main__":
+    if not os.path.exists("cafe_management.db"):
+        init_db()
     app.run(debug=True)
