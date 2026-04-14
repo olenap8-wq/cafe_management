@@ -1,31 +1,113 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <h2>商品一覧</h2>
 
+<!-- 最終更新 -->
+<div class="top-bar">
+    <div class="last-updated">
+        最終更新：
+        {% if last_updated %}
+            {{ last_updated[5:7]|int }}月{{ last_updated[8:10]|int }}日 {{ last_updated[11:13] }}:{{ last_updated[14:16] }}
+        {% else %}
+            なし
+        {% endif %}
+    </div>
+</div>
+
+<!-- タブ -->
+<div class="tabs">
+    <button>コーヒー豆</button>
+    <button>スコーン材料</button>
+    <button class="active">商品管理</button>
+</div>
+
+
+<!-- ボタン -->
+<button class="primary-btn" onclick="openModal()">
+    ＋ 新しい商品を登録
+</button>
+
+<!-- テーブルカード -->
+<div class="table-card">
     <table>
         <tr>
             <th>商品名</th>
             <th>カテゴリ</th>
-            <th>在庫</th>
-            <th>アラート</th>
+            <th>価格</th>
+            <th>状態</th>
+            <th>操作</th>
         </tr>
 
         {% for p in products %}
         <tr>
             <td>{{ p.name }}</td>
-            <td>{{ p.category }}</td>
-            <td>{{ p.quantity or 0 }}</td>
+
+            <!-- カテゴリバッジ -->
+            <td>
+                <span class="badge 
+                    {% if p.category == 'ドリンク' %}drink{% else %}food{% endif %}">
+                    {{ p.category }}
+                </span>
+            </td>
+
+            <!-- 価格 -->
+            <td>{{ p.price }}円</td>
+
+            <!-- 状態 -->
             <td>
                 {% if p.quantity is not none and p.quantity <= p.threshold %}
-                    ⚠ 少ない
+                    <span class="alert">⚠ 少ない</span>
                 {% else %}
-                    OK
+                    <span class="ok">OK</span>
                 {% endif %}
+            </td>
+
+            <!-- 操作 -->
+            <td class="actions">
+                <a href="/products/{{ p.id }}/edit" class="edit">✏</a>
+
+                <form action="/products/{{ p.id }}/delete" method="POST" style="display:inline;">
+                    <button class="delete">🗑</button>
+                </form>
             </td>
         </tr>
         {% endfor %}
     </table>
 </div>
+
+<!-- モーダル -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            新しい商品を登録
+            <span class="close" onclick="closeModal()">×</span>
+        </div>
+
+        <form action="/products" method="POST">
+
+            <label>商品名 *</label>
+            <input type="text" name="name" placeholder="例：ブレンド豆" required>
+
+            <label>カテゴリ *</label>
+            <select name="category">
+                <option value="ドリンク">ドリンク</option>
+                <option value="フード">フード</option>
+            </select>
+
+            <label>価格（円）</label>
+            <input type="number" name="price" placeholder="例：500">
+
+            <label>在庫アラート数</label>
+            <input type="number" name="threshold" value="5">
+
+            <label>初期在庫数</label>
+            <input type="number" name="quantity" value="0">
+
+            <button class="primary-btn">登録する</button>
+
+        </form>
+    </div>
+</div>
+
 {% endblock %}
