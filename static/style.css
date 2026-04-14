@@ -1,10 +1,12 @@
+/* ===== 全体 ===== */
 body {
-    font-family: "Helvetica", sans-serif;
-    background-color: #f3f4f6;
+    font-family: "Noto Sans JP", sans-serif;
+    background-color: #F1EFE8;
     margin: 0;
+    color: #333;
 }
 
-/* ヘッダー */
+/* ===== ヘッダー ===== */
 .header {
     display: flex;
     justify-content: space-between;
@@ -17,47 +19,52 @@ body {
 .header h1 {
     margin: 0;
     font-size: 20px;
-    color: #4f46e5;
+    color: #534AB7;
 }
 
+/* ===== ナビ ===== */
 .nav-buttons a {
+    display: inline-block;
+    min-height: 44px;
+    line-height: 44px;
+    padding: 0 14px;
     margin-left: 10px;
-    text-decoration: none;
-    padding: 8px 14px;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #e5e7eb;
     color: #333;
+    text-decoration: none;
 }
 
 .nav-buttons a.active {
-    background: #4f46e5;
+    background: #534AB7;
     color: white;
 }
 
-/* コンテンツ */
+/* ===== コンテンツ ===== */
 .container {
     padding: 30px;
 }
 
-/* タブ */
+/* ===== タブ ===== */
 .tabs {
     margin-bottom: 20px;
 }
 
 .tabs button {
-    padding: 8px 14px;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 999px;
     border: none;
-    border-radius: 8px;
-    margin-right: 8px;
     background: #e5e7eb;
     cursor: pointer;
 }
 
 .tabs .active {
-    background: #4f46e5;
+    background: #534AB7;
     color: white;
 }
 
+/* ===== 最終更新 ===== */
 .last-updated {
     text-align: right;
     font-size: 13px;
@@ -65,60 +72,98 @@ body {
     margin-bottom: 15px;
 }
 
-/* ボタン */
+/* ===== ボタン共通 ===== */
+button {
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
 .primary-btn {
     display: block;
     width: 100%;
-    padding: 12px;
-    background: #6366f1;
+    background: #534AB7;
     color: white;
-    border: none;
-    border-radius: 10px;
     margin-bottom: 20px;
-    cursor: pointer;
-    text-align: center;
 }
 
-/* テーブル */
+/* ===== カード ===== */
 .table-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
 }
 
+/* ===== テーブル ===== */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
 th {
-    background: #4f46e5;
+    background: #534AB7;
     color: white;
     text-align: left;
     padding: 12px;
 }
 
 td {
-    padding: 12px;
+    padding: 14px;
     border-bottom: 1px solid #eee;
 }
 
-/* バッジ */
+tr:hover {
+    background: #f9fafb;
+}
+
+/* ===== 在庫（強調） ===== */
+.quantity {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* ===== バッジ ===== */
 .badge {
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 999px;
     font-size: 12px;
+    font-weight: bold;
+}
+
+/* カテゴリ */
+.badge.drink {
     background: #e0e7ff;
     color: #4338ca;
 }
 
-/* 操作ボタン */
+.badge.food {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+/* 状態 */
+.badge.ok {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge.warn {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge.danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ===== 操作ボタン ===== */
 .actions button {
-    border: none;
     padding: 6px 10px;
-    margin-right: 5px;
     border-radius: 6px;
-    cursor: pointer;
 }
 
 .edit {
@@ -130,39 +175,7 @@ td {
     color: red;
 }
 
-/* モーダル背景 */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-}
-
-/* 中身 */
-.modal-content {
-    background: white;
-    width: 400px;
-    margin: 100px auto;
-    padding: 20px;
-    border-radius: 12px;
-}
-
-/* ヘッダー */
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.close {
-    cursor: pointer;
-    font-size: 20px;
-}
-
-/* ===== モーダル強化 ===== */
+/* ===== モーダル ===== */
 .modal {
     display: none;
     position: fixed;
@@ -185,33 +198,31 @@ td {
 
 /* ヘッダー */
 .modal-header {
-    background: #5b50e6;
+    background: #534AB7;
     color: white;
     padding: 16px 20px;
     font-size: 18px;
     font-weight: bold;
 }
 
-/* 閉じるボタン */
+/* 閉じる */
 .close {
     float: right;
     cursor: pointer;
     font-size: 22px;
 }
 
-/* フォーム全体 */
+/* フォーム */
 .modal form {
     padding: 20px;
 }
 
-/* ラベル */
 .modal label {
     display: block;
     margin-top: 15px;
     font-weight: bold;
 }
 
-/* 入力欄 */
 .modal input,
 .modal select {
     width: 100%;
@@ -222,76 +233,9 @@ td {
     font-size: 14px;
 }
 
-/* プレースホルダー */
-.modal input::placeholder {
-    color: #aaa;
-}
-
-/* ボタン */
-.modal .primary-btn {
-    margin-top: 20px;
-}
-
-/* ===== バッジ強化 ===== */
-.badge {
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.badge.drink {
-    background: #e0e7ff;
-    color: #4338ca;
-}
-
-.badge.food {
-    background: #fce7f3;
-    color: #be185d;
-}
-
-/* 状態表示 */
-.alert {
-    color: #dc2626;
-    font-weight: bold;
-}
-
-.ok {
-    color: #16a34a;
-    font-weight: bold;
-}
-
-/* テーブル行ホバー */
-tr:hover {
-    background: #f9fafb;
-}
-
-/* タブ強化 */
-.tabs {
-    margin-bottom: 20px;
-}
-
-.tabs button {
-    padding: 8px 16px;
-    border-radius: 999px;
-    border: none;
-    background: #e5e7eb;
-    cursor: pointer;
-}
-
-.tabs .active {
-    background: #4f46e5;
-    color: white;
-}
-
-/* ボタン余白 */
-.primary-btn {
-    margin-bottom: 20px;
-}
-
-/* 上部の紫バー */
+/* ===== 上部バー（最終更新） ===== */
 .top-bar {
-    background: #5b4bdb;
+    background: #534AB7;
     height: 50px;
     border-radius: 12px;
     display: flex;
@@ -301,7 +245,6 @@ tr:hover {
     margin-bottom: 20px;
 }
 
-/* 最終更新 */
 .top-bar .last-updated {
     color: white;
     font-size: 14px;
