@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <div class="auth-title">新規登録</div>
+
+        <form method="POST">
+
+            <label>ユーザー名</label>
+            <input type="text" name="name" placeholder="山田 太郎" required>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="example@email.com" required>
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="6文字以上推奨" required>
+
+            <button class="auth-btn">登録する</button>
+
+        </form>
+
+        <div class="auth-link">
+            すでにアカウントがありますか？ <a href="/login">ログイン</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -3,7 +3,7 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    role TEXT,
+    role TEXT DEFAULT 'staff'
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE customers (

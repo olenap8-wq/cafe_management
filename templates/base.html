@@ -14,6 +14,15 @@
         <a href="#">お客様</a>
         <a href="#">申し送り</a>
         <a href="/" class="active">在庫管理</a>
+        
+        {% if session.get("user_id") %}
+            <span>{{ session.get("user_name") }}</span>
+            <a href="/logout">ログアウト</a>
+        {% else %}
+            <a href="/login">ログイン</a>
+            <a href="/register">登録</a>
+        {% endif %}
+    
     </div>
 </div>
 
