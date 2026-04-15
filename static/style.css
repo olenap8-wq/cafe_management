@@ -249,3 +249,75 @@ tr:hover {
     color: white;
     font-size: 14px;
 }
+
+/* ===== 認証ページ（ログイン・登録） ===== */
+
+.auth-wrapper {
+    max-width: 420px;
+    margin: 60px auto;
+    padding: 30px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.auth-title {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #534AB7;
+}
+
+.auth-card label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.auth-card input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    outline: none;
+}
+
+.auth-card input:focus {
+    border-color: #534AB7;
+    box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.1);
+}
+
+.auth-btn {
+    width: 100%;
+    margin-top: 25px;
+    background: #534AB7;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.auth-btn:hover {
+    background: #4338ca;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.auth-link a {
+    color: #534AB7;
+    text-decoration: none;
+}

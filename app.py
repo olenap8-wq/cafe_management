@@ -1,14 +1,26 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask import flash
 import sqlite3
 from datetime import datetime
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
+import secrets
+from functools import wraps
+
 
 app = Flask(__name__)
 
+if not os.path.exists(app.instance_path):
+    os.makedirs(app.instance_path)
+
+DB_NAME = os.path.join(app.instance_path, "cafe_management.db")
+
+print("DBパス:", DB_NAME)
+
+app.secret_key = secrets.token_hex(16)
+
 # パス設定
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_NAME = os.path.join(BASE_DIR, "cafe_management.db")
-
 
 # =========================
 # DB初期化
@@ -27,15 +39,25 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user_id" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
 # =========================
 # 新規作成（Create）
 # =========================
 @app.route("/products/new")
+@login_required
 def new_product():
     return render_template("product_form.html")
 
 
 @app.route("/products", methods=["POST"])
+@login_required
 def create_product():
     name = request.form["name"]
     category = request.form["category"]
@@ -70,6 +92,7 @@ def create_product():
 
 # 編集ページ
 @app.route("/products/<int:id>/edit")
+@login_required
 def edit_product(id):
     conn = get_db_connection()
     product = conn.execute(
@@ -81,6 +104,7 @@ def edit_product(id):
 
 # 更新処理
 @app.route("/")
+@login_required
 def product_list():
     conn = get_db_connection()
 
@@ -108,6 +132,7 @@ def product_list():
 # 削除（Delete）
 # =========================
 @app.route("/products/<int:id>/delete", methods=["POST"])
+@login_required
 def delete_product(id):
     conn = get_db_connection()
     conn.execute("DELETE FROM products WHERE id=?", (id,))
@@ -115,6 +140,82 @@ def delete_product(id):
     conn.close()
     return redirect(url_for("product_list"))
 
+# =========================
+# ユーザ登録・ログイン・ログアウト
+# =========================
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        name = request.form["name"]
+        email = request.form["email"]
+        password = request.form["password"]
+
+        if len(password) < 6:
+            return "パスワードは6文字以上にしてください"
+
+        password_hash = generate_password_hash(password)
+
+        conn = get_db_connection()
+        try:
+            conn.execute(
+                "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+                (name, email, password_hash)
+            )
+            conn.commit()
+        except sqlite3.IntegrityError:
+            return "このメールはすでに使われています"
+        finally:
+            conn.close()
+
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
+        # 🔥 試行回数チェック（最初にやる）
+        if session.get("login_attempts", 0) >= 5:
+            error = "試行回数が多すぎます。少し時間をおいてください"
+            return render_template("login.html", error=error)
+
+        conn = get_db_connection()
+        user = conn.execute(
+            "SELECT * FROM users WHERE email = ?",
+            (email,)
+        ).fetchone()
+        conn.close()
+
+        # ログイン成功
+        if user and check_password_hash(user["password_hash"], password):
+
+            session.clear()  # 🔥 超重要
+
+            session["user_id"] = user["id"]
+            session["user_name"] = user["name"]
+
+            flash("ようこそ！" + user["name"] + "さん")
+
+            return redirect(url_for("product_list"))
+
+        else:
+            # 🔥 失敗時のみカウント
+            session["login_attempts"] = session.get("login_attempts", 0) + 1
+            error = "メールアドレスまたはパスワードが間違っています"
+
+    return render_template("login.html", error=error)
+
+@app.route("/logout")
+@login_required
+def logout():
+    session.clear()
+    flash("ログアウトしました")
+    return redirect(url_for("login"))
 
 # =========================
 # 起動
