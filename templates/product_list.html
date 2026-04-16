@@ -2,112 +2,130 @@
 
 {% block content %}
 
-<!-- 最終更新 -->
-<div class="top-bar">
-    <div class="last-updated">
+<!-- 上部バー -->
+<div class="bg-primary text-white rounded p-3 mb-4 d-flex justify-content-between align-items-center">
+    <span class="fw-semibold">在庫一覧</span>
+    <span>
         最終更新：
         {% if last_updated %}
             {{ last_updated[5:7]|int }}月{{ last_updated[8:10]|int }}日 {{ last_updated[11:16] }}
         {% else %}
             なし
         {% endif %}
-    </div>
+    </span>
 </div>
 
 <!-- タブ -->
-<div class="tabs">
-    <button>コーヒー豆</button>
-    <button>スコーン材料</button>
-    <button class="active">商品管理</button>
+<div class="mb-3">
+    <button class="btn btn-outline-secondary me-2">コーヒー豆</button>
+    <button class="btn btn-outline-secondary me-2">スコーン材料</button>
+    <button class="btn btn-primary">商品管理</button>
 </div>
 
-
-<!-- ボタン -->
-<button class="primary-btn" onclick="openModal()">
+<!-- 新規登録ボタン -->
+<button class="btn btn-primary w-100 mb-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modal">
     ＋ 新しい商品を登録
 </button>
 
 <!-- テーブルカード -->
-<div class="table-card">
-    <table>
-        <tr>
-            <th>商品名</th>
-            <th>カテゴリ</th>
-            <th>価格</th>
-            <th>状態</th>
-            <th>操作</th>
-        </tr>
+<div class="card shadow-sm">
+    <div class="card-body">
 
-        {% for p in products %}
-        <tr>
-            <td>{{ p.name }}</td>
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>商品名</th>
+                    <th>カテゴリ</th>
+                    <th>価格</th>
+                    <th>状態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
 
-            <!-- カテゴリバッジ -->
-            <td>
-                <span class="badge 
-                    {% if p.category == 'ドリンク' %}drink{% else %}food{% endif %}">
-                    {{ p.category }}
-                </span>
-            </td>
+            <tbody>
+            {% for p in products %}
+                <tr>
+                    <td>{{ p.name }}</td>
 
-            <!-- 価格 -->
-            <td>{{ p.price }}円</td>
+                    <!-- カテゴリ -->
+                    <td>
+                        {% if p.category == 'ドリンク' %}
+                            <span class="badge bg-primary">ドリンク</span>
+                        {% else %}
+                            <span class="badge bg-danger">フード</span>
+                        {% endif %}
+                    </td>
 
-            <!-- 状態 -->
-            <td>
-                {% if p.quantity is not none and p.quantity <= p.threshold %}
-                    <span class="alert">⚠ 少ない</span>
-                {% else %}
-                    <span class="ok">OK</span>
-                {% endif %}
-            </td>
+                    <!-- 価格 -->
+                    <td>{{ p.price }}円</td>
 
-            <!-- 操作 -->
-            <td class="actions">
-                <a href="/products/{{ p.id }}/edit" class="edit">✏</a>
+                    <!-- 状態 -->
+                    <td>
+                        {% if p.quantity is not none and p.quantity <= p.threshold %}
+                            <span class="badge bg-warning text-dark px-3">⚠ 少ない</span>
+                        {% else %}
+                            <span class="badge bg-success px-3">OK</span>
+                        {% endif %}
+                    </td>
 
-                <form action="/products/{{ p.id }}/delete" method="POST" style="display:inline;">
-                    <button class="delete">🗑</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+                    <!-- 操作 -->
+                    <td>
+                        <a href="/products/{{ p.id }}/edit" class="btn btn-sm btn-outline-secondary me-1">✏</a>
+
+                        <form action="/products/{{ p.id }}/delete" method="POST" class="d-inline">
+                            <button class="btn btn-sm btn-outline-danger">🗑</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
 </div>
 
 <!-- モーダル -->
-<div id="modal" class="modal">
+<div class="modal fade" id="modal" tabindex="-1">
+  <div class="modal-dialog">
     <div class="modal-content">
 
-        <div class="modal-header">
-            新しい商品を登録
-            <span class="close" onclick="closeModal()">×</span>
-        </div>
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">新しい商品を登録</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-        <form action="/products" method="POST">
+      <form action="/products" method="POST">
 
-            <label>商品名 *</label>
-            <input type="text" name="name" placeholder="例：ブレンド豆" required>
+        <div class="modal-body">
 
-            <label>カテゴリ *</label>
-            <select name="category">
+            <label class="form-label">商品名 *</label>
+            <input type="text" name="name" class="form-control" required>
+
+            <label class="form-label mt-3">カテゴリ *</label>
+            <select name="category" class="form-select">
                 <option value="ドリンク">ドリンク</option>
                 <option value="フード">フード</option>
             </select>
 
-            <label>価格（円）</label>
-            <input type="number" name="price" placeholder="例：500">
+            <label class="form-label mt-3">価格（円）</label>
+            <input type="number" name="price" class="form-control">
 
-            <label>在庫アラート数</label>
-            <input type="number" name="threshold" value="5">
+            <label class="form-label mt-3">在庫アラート数</label>
+            <input type="number" name="threshold" class="form-control" value="5">
 
-            <label>初期在庫数</label>
-            <input type="number" name="quantity" value="0">
+            <label class="form-label mt-3">初期在庫数</label>
+            <input type="number" name="quantity" class="form-control" value="0">
 
-            <button class="primary-btn">登録する</button>
+        </div>
 
-        </form>
+        <div class="modal-footer">
+            <button class="btn btn-primary w-100">登録する</button>
+        </div>
+
+      </form>
+
     </div>
+  </div>
 </div>
 
 {% endblock %}

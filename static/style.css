@@ -1,323 +1,98 @@
-/* ===== 全体 ===== */
+/* ===== ベース ===== */
 body {
     font-family: "Noto Sans JP", sans-serif;
     background-color: #F1EFE8;
-    margin: 0;
     color: #333;
 }
 
-/* ===== ヘッダー ===== */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background: white;
-    border-bottom: 1px solid #ddd;
+/* ===== ブランドカラー ===== */
+:root {
+    --bs-primary: #534AB7;
+    --bs-primary-rgb: 83, 74, 183;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 20px;
-    color: #534AB7;
+/* ===== ナビバー ===== */
+.navbar {
+    height: 64px;
 }
 
-/* ===== ナビ ===== */
-.nav-buttons a {
-    display: inline-block;
-    min-height: 44px;
-    line-height: 44px;
-    padding: 0 14px;
-    margin-left: 10px;
-    border-radius: 10px;
-    background: #e5e7eb;
-    color: #333;
-    text-decoration: none;
+.navbar-brand {
+    font-size: 18px;
+    color: #534AB7 !important;
 }
 
-.nav-buttons a.active {
-    background: #534AB7;
-    color: white;
-}
-
-/* ===== コンテンツ ===== */
+/* ===== コンテナ余白 ===== */
 .container {
-    padding: 30px;
+    max-width: 1100px;
+    padding-top: 30px;
 }
 
-/* ===== タブ ===== */
-.tabs {
-    margin-bottom: 20px;
-}
-
-.tabs button {
-    min-height: 44px;
-    padding: 10px 16px;
-    border-radius: 999px;
-    border: none;
-    background: #e5e7eb;
-    cursor: pointer;
-}
-
-.tabs .active {
-    background: #534AB7;
-    color: white;
-}
-
-/* ===== 最終更新 ===== */
-.last-updated {
-    text-align: right;
-    font-size: 13px;
-    color: #9ca3af;
-    margin-bottom: 15px;
-}
-
-/* ===== ボタン共通 ===== */
-button {
-    min-height: 44px;
-    padding: 10px 16px;
+/* ===== 上部バー（最終更新） ===== */
+.bg-primary {
+    background-color: #534AB7 !important;
     border-radius: 12px;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.primary-btn {
-    display: block;
-    width: 100%;
-    background: #534AB7;
-    color: white;
-    margin-bottom: 20px;
 }
 
 /* ===== カード ===== */
-.table-card {
-    background: white;
+.card {
+    border: none;
     border-radius: 16px;
-    overflow: hidden;
 }
 
 /* ===== テーブル ===== */
-table {
-    width: 100%;
-    border-collapse: collapse;
+.table {
+    margin-bottom: 0;
 }
 
-th {
-    background: #534AB7;
-    color: white;
-    text-align: left;
-    padding: 12px;
+.table th {
+    font-weight: 600;
 }
 
-td {
-    padding: 14px;
-    border-bottom: 1px solid #eee;
+/* ===== ボタン ===== */
+.btn-primary {
+    background-color: #534AB7;
+    border-color: #534AB7;
+    border-radius: 10px;
 }
 
-tr:hover {
-    background: #f9fafb;
+.btn-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
 }
 
-/* ===== 在庫（強調） ===== */
-.quantity {
-    font-size: 18px;
-    font-weight: bold;
+.btn {
+    border-radius: 10px;
 }
 
 /* ===== バッジ ===== */
 .badge {
-    padding: 5px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-/* カテゴリ */
-.badge.drink {
-    background: #e0e7ff;
-    color: #4338ca;
-}
-
-.badge.food {
-    background: #fce7f3;
-    color: #be185d;
-}
-
-/* 状態 */
-.badge.ok {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.badge.warn {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge.danger {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-/* ===== 操作ボタン ===== */
-.actions button {
     padding: 6px 10px;
-    border-radius: 6px;
-}
-
-.edit {
-    background: #e5e7eb;
-}
-
-.delete {
-    background: #fee2e2;
-    color: red;
+    font-size: 12px;
+    border-radius: 999px;
 }
 
 /* ===== モーダル ===== */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-}
-
-/* 中央配置 */
 .modal-content {
-    width: 500px;
-    margin: 80px auto;
     border-radius: 16px;
-    overflow: hidden;
-    background: white;
-}
-
-/* ヘッダー */
-.modal-header {
-    background: #534AB7;
-    color: white;
-    padding: 16px 20px;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* 閉じる */
-.close {
-    float: right;
-    cursor: pointer;
-    font-size: 22px;
-}
-
-/* フォーム */
-.modal form {
-    padding: 20px;
-}
-
-.modal label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-.modal input,
-.modal select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 6px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    font-size: 14px;
-}
-
-/* ===== 上部バー（最終更新） ===== */
-.top-bar {
-    background: #534AB7;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 20px;
-    margin-bottom: 20px;
-}
-
-.top-bar .last-updated {
-    color: white;
-    font-size: 14px;
-}
-
-/* ===== 認証ページ（ログイン・登録） ===== */
-
-.auth-wrapper {
-    max-width: 420px;
-    margin: 60px auto;
-    padding: 30px;
-}
-
-.auth-card {
-    background: white;
-    border-radius: 18px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-.auth-title {
-    font-size: 22px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #534AB7;
-}
-
-.auth-card label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.auth-card input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 6px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    font-size: 14px;
-    outline: none;
-}
-
-.auth-card input:focus {
-    border-color: #534AB7;
-    box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.1);
-}
-
-.auth-btn {
-    width: 100%;
-    margin-top: 25px;
-    background: #534AB7;
-    color: white;
-    padding: 12px;
     border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    cursor: pointer;
 }
 
-.auth-btn:hover {
-    background: #4338ca;
+.modal-header {
+    border-bottom: none;
 }
 
-.auth-link {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 13px;
+.modal-footer {
+    border-top: none;
 }
 
-.auth-link a {
-    color: #534AB7;
-    text-decoration: none;
+/* ===== フォーム ===== */
+.form-control,
+.form-select {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* ===== ログイン画面 ===== */
+.card h3 {
+    font-weight: 600;
 }
