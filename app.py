@@ -47,6 +47,31 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def log_access():
+    if "user_id" not in session:
+        return
+
+    # 🔥 staticは除外
+    if request.path.startswith("/static"):
+        return
+    
+    conn = get_db_connection()
+    conn.execute(
+        "INSERT INTO access_logs (user_id, path, method) VALUES (?, ?, ?)",
+        (session["user_id"], request.path, request.method)
+    )
+    conn.commit()
+    conn.close()
+
+def delete_old_logs():
+    conn = get_db_connection()
+    conn.execute("""
+        DELETE FROM access_logs
+        WHERE created_at < datetime('now', '-7 days')
+    """)
+    conn.commit()
+    conn.close()
+
 # =========================
 # 新規作成（Create）
 # =========================
@@ -200,7 +225,16 @@ def login():
             session["user_name"] = user["name"]
 
             flash("ようこそ！" + user["name"] + "さん")
-
+            
+            # 🔥 ここを追加！！！！
+            conn = get_db_connection()
+            conn.execute(
+                "INSERT INTO login_logs (user_id) VALUES (?)",
+                (user["id"],)
+            )
+            conn.commit()
+            conn.close()
+            
             return redirect(url_for("product_list"))
 
         else:
@@ -216,6 +250,10 @@ def logout():
     session.clear()
     flash("ログアウトしました")
     return redirect(url_for("login"))
+
+@app.before_request
+def before_request():
+    log_access()
 
 # =========================
 # 起動

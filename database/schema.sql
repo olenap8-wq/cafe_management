@@ -3,7 +3,7 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    role TEXT DEFAULT 'staff'
+    role TEXT DEFAULT 'staff',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE customers (
@@ -70,4 +70,12 @@ CREATE TABLE customer_badges (
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
     FOREIGN KEY (badge_id) REFERENCES badges(id) ON DELETE CASCADE,
     UNIQUE (customer_id, badge_id)
+);
+CREATE TABLE access_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    path TEXT,
+    method TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
