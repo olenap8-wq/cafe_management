@@ -1,36 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="table-card" style="padding:20px; max-width:500px;">
-    
-    <!-- タイトルを切り替え -->
-    <h2>{% if product %}商品編集{% else %}商品登録{% endif %}</h2>
 
-    <!-- フォームの送信先を切り替え -->
-    <form action="{% if product %}/products/{{ product.id }}/update{% else %}/products{% endif %}" method="POST">
-        
-        <label>商品名</label>
-        <input type="text" name="name" 
-               value="{{ product.name if product else '' }}" required>
+<div class="d-flex justify-content-center">
+    <div class="card shadow-sm p-4" style="max-width: 500px; width:100%;">
 
-        <label>カテゴリ</label>
-        <input type="text" name="category" 
-               value="{{ product.category if product else '' }}">
+        <h4 class="mb-3 text-primary">
+            {% if product %}商品編集{% else %}商品登録{% endif %}
+        </h4>
 
-        <label>在庫アラート数</label>
-        <input type="number" name="threshold" 
-               value="{{ product.threshold if product else 5 }}">
+        <form action="{% if product %}/products/{{ product.id }}/update{% else %}/products{% endif %}" method="POST">
+            
+            <label class="form-label">商品名</label>
+            <input type="text" name="name" class="form-control"
+                   value="{{ product.name if product else '' }}" required>
 
-        <!-- 新規登録のときだけ表示 -->
-        {% if not product %}
-        <label>初期在庫数</label>
-        <input type="number" name="quantity" value="0">
-        {% endif %}
+            <label class="form-label mt-3">カテゴリ</label>
+            <input type="text" name="category" class="form-control"
+                   value="{{ product.category if product else '' }}">
 
-        <button class="primary-btn">
-            {% if product %}更新する{% else %}登録する{% endif %}
-        </button>
-    </form>
+            <label class="form-label mt-3">在庫アラート数</label>
+            <input type="number" name="threshold" class="form-control"
+                   value="{{ product.threshold if product else 5 }}">
 
+            {% if not product %}
+            <label class="form-label mt-3">初期在庫数</label>
+            <input type="number" name="quantity" class="form-control" value="0">
+            {% endif %}
+
+            <button class="btn btn-primary w-100 mt-4">
+                {% if product %}更新する{% else %}登録する{% endif %}
+            </button>
+        </form>
+
+    </div>
 </div>
+
 {% endblock %}

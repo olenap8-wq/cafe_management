@@ -2,51 +2,34 @@
 
 {% block content %}
 
-<div class="auth-wrapper">
-    <div class="auth-card">
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-sm p-4" style="width: 400px;">
 
-        <div class="auth-title">ログイン</div>
-
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <div style="
-                background:#dcfce7;
-                color:#166534;
-                padding:10px;
-                border-radius:10px;
-                margin-bottom:15px;
-                font-size:13px;">
-                {{ messages[0] }}
-            </div>
-        {% endif %}
-    {% endwith %}
+        <h3 class="text-center text-primary mb-4">ログイン</h3>
 
         {% if error %}
-        <div style="
-            background:#fee2e2;
-            color:#991b1b;
-            padding:10px;
-            border-radius:10px;
-            margin-bottom:15px;
-            font-size:13px;">
+        <div class="alert alert-danger">
             {{ error }}
         </div>
         {% endif %}
 
         <form method="POST">
 
-            <label>Email</label>
-            <input type="email" name="email" required>
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
 
-            <label>Password</label>
-            <input type="password" name="password" required>
+            <label class="form-label mt-3">Password</label>
+            <input type="password" name="password" class="form-control" required>
 
-            <button class="auth-btn">ログイン</button>
+            <button class="btn btn-primary w-100 mt-4">ログイン</button>
 
         </form>
 
-        <div class="auth-link">
-            アカウントがないですか？ <a href="/register">新規登録</a>
+        <div class="text-center mt-3">
+            <small>
+                アカウントがないですか？
+                <a href="/register">新規登録</a>
+            </small>
         </div>
 
     </div>

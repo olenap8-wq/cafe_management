@@ -2,28 +2,31 @@
 
 {% block content %}
 
-<div class="auth-wrapper">
-    <div class="auth-card">
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-sm p-4" style="width: 400px;">
 
-        <div class="auth-title">新規登録</div>
+        <h3 class="text-center text-primary mb-4">新規登録</h3>
 
         <form method="POST">
 
-            <label>ユーザー名</label>
-            <input type="text" name="name" placeholder="山田 太郎" required>
+            <label class="form-label">ユーザー名</label>
+            <input type="text" name="name" class="form-control" required>
 
-            <label>Email</label>
-            <input type="email" name="email" placeholder="example@email.com" required>
+            <label class="form-label mt-3">Email</label>
+            <input type="email" name="email" class="form-control" required>
 
-            <label>Password</label>
-            <input type="password" name="password" placeholder="6文字以上推奨" required>
+            <label class="form-label mt-3">Password</label>
+            <input type="password" name="password" class="form-control" required>
 
-            <button class="auth-btn">登録する</button>
+            <button class="btn btn-primary w-100 mt-4">登録する</button>
 
         </form>
 
-        <div class="auth-link">
-            すでにアカウントがありますか？ <a href="/login">ログイン</a>
+        <div class="text-center mt-3">
+            <small>
+                すでにアカウントがありますか？
+                <a href="/login">ログイン</a>
+            </small>
         </div>
 
     </div>
