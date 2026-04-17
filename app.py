@@ -241,6 +241,20 @@ def logout():
 # =========================
 @app.before_request
 def before_request():
+    ensure_db_initialized
+        conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT name FROM sqlite_master 
+        WHERE type='table' AND name='users';
+    """)
+
+    if cursor.fetchone() is None:
+        print("usersテーブルなし → 強制初期化")
+        init_db()
+
+    conn.close()
     log_access()
 
 # =========================
