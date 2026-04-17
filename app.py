@@ -65,6 +65,16 @@ def get_db_connection():
     return conn
 
 # =========================
+# DBをエクスポートする
+# =========================
+@app.route("/debug/export")
+def export_db():
+    import shutil
+    export_path = os.path.join(BASE_DIR, "export.db")
+    shutil.copy(DB_NAME, export_path)
+    return "DB exported!"
+
+# =========================
 # ログイン必須
 # =========================
 def login_required(f):
