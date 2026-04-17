@@ -76,6 +76,10 @@ def export_db():
         download_name="cafe_management.db"
     )
 
+@app.route("/debug/db-path")
+def debug_db_path():
+    return DB_NAME
+
 # =========================
 # ログイン必須
 # =========================
