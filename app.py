@@ -24,15 +24,35 @@ print("DBパス:", DB_NAME)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
 
 # =========================
-# DB初期化
+# DB初期化（安全版）
 # =========================
 def init_db():
     with sqlite3.connect(DB_NAME) as conn:
         with open(os.path.join(BASE_DIR, 'database/schema.sql')) as f:
             conn.executescript(f.read())
 
-# 🔥 ここが超重要（Render対応）
-init_db()
+# 🔥 超重要：テーブルが存在しない場合だけ初期化
+def ensure_db_initialized():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    # usersテーブルがあるかチェック
+    cursor.execute("""
+        SELECT name FROM sqlite_master 
+        WHERE type='table' AND name='users';
+    """)
+    result = cursor.fetchone()
+
+    if result is None:
+        print("テーブルが存在しない → DB初期化します")
+        init_db()
+    else:
+        print("DBは既に初期化済み")
+
+    conn.close()
+
+# 🔥 アプリ起動時に必ずチェック
+ensure_db_initialized()
 
 # =========================
 # DB接続
@@ -43,7 +63,7 @@ def get_db_connection():
     return conn
 
 # =========================
-# ログイン必須デコレータ
+# ログイン必須
 # =========================
 def login_required(f):
     @wraps(f)
@@ -224,7 +244,7 @@ def before_request():
     log_access()
 
 # =========================
-# 起動
+# 起動（ローカル用）
 # =========================
 if __name__ == "__main__":
     app.run(debug=True)
