@@ -17,7 +17,7 @@ DB_NAME = os.path.join(app.instance_path, "cafe_management.db")
 
 print("DBパス:", DB_NAME)
 
-app.secret_key = secrets.token_hex(16)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
 
 # パス設定
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
