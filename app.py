@@ -17,6 +17,8 @@ if not os.path.exists(app.instance_path):
 DB_NAME = os.path.join(app.instance_path, "cafe_management.db")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+print("🔥 使用中DB:", DB_NAME)
+
 print("DBパス:", DB_NAME)
 
 # =========================
@@ -189,6 +191,8 @@ def delete_product(id):
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        print("🔥 registerで使用中DB:", DB_NAME) 
+
         name = request.form["name"]
         email = request.form["email"]
         password = request.form["password"]
@@ -205,6 +209,8 @@ def register():
                 (name, email, password_hash)
             )
             conn.commit()
+
+            print("✅ 登録完了DB:", DB_NAME)
         except sqlite3.IntegrityError:
             return "このメールはすでに使われています"
         finally:
