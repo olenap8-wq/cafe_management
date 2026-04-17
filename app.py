@@ -26,10 +26,14 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
 # =========================
 # DB初期化（安全版）
 # =========================
-def init_db():
+init_db()
     with sqlite3.connect(DB_NAME) as conn:
         with open(os.path.join(BASE_DIR, 'database/schema.sql')) as f:
             conn.executescript(f.read())
+
+print("init_db 実行開始")
+init_db()
+print("init_db 実行完了")
 
 # 🔥 超重要：テーブルが存在しない場合だけ初期化
 def ensure_db_initialized():
