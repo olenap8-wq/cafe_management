@@ -1,26 +1,27 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from flask import flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 from datetime import datetime
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
-import secrets
 from functools import wraps
-
 
 app = Flask(__name__)
 
+# =========================
+# パス設定
+# =========================
 if not os.path.exists(app.instance_path):
     os.makedirs(app.instance_path)
 
 DB_NAME = os.path.join(app.instance_path, "cafe_management.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 print("DBパス:", DB_NAME)
 
+# =========================
+# SECRET_KEY
+# =========================
 app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
-
-# パス設定
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # =========================
 # DB初期化
@@ -30,6 +31,8 @@ def init_db():
         with open(os.path.join(BASE_DIR, 'database/schema.sql')) as f:
             conn.executescript(f.read())
 
+# 🔥 ここが超重要（Render対応）
+init_db()
 
 # =========================
 # DB接続
@@ -39,6 +42,9 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# =========================
+# ログイン必須デコレータ
+# =========================
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -47,11 +53,13 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+# =========================
+# アクセスログ
+# =========================
 def log_access():
     if "user_id" not in session:
         return
 
-    # 🔥 staticは除外
     if request.path.startswith("/static"):
         return
     
@@ -63,43 +71,31 @@ def log_access():
     conn.commit()
     conn.close()
 
-def delete_old_logs():
-    conn = get_db_connection()
-    conn.execute("""
-        DELETE FROM access_logs
-        WHERE created_at < datetime('now', '-7 days')
-    """)
-    conn.commit()
-    conn.close()
-
 # =========================
-# 新規作成（Create）
+# 商品登録
 # =========================
 @app.route("/products/new")
 @login_required
 def new_product():
     return render_template("product_form.html")
 
-
 @app.route("/products", methods=["POST"])
 @login_required
 def create_product():
     name = request.form["name"]
     category = request.form["category"]
-    price = request.form["price"]          # ← 追加
+    price = request.form["price"]
     threshold = request.form["threshold"]
     quantity = request.form["quantity"]
 
     conn = get_db_connection()
 
-    # productsテーブルに登録（unit追加）
     cursor = conn.execute(
         "INSERT INTO products (name, category, price, threshold) VALUES (?, ?, ?, ?)",
         (name, category, price, threshold)
     )
     product_id = cursor.lastrowid
 
-    # inventoryテーブルに登録
     conn.execute(
         "INSERT INTO inventory (product_id, quantity, updated_at) VALUES (?, ?, ?)",
         (product_id, quantity, datetime.now())
@@ -110,24 +106,9 @@ def create_product():
 
     return redirect(url_for("product_list"))
 
-
 # =========================
-# 編集（Update）
+# 商品一覧
 # =========================
-
-# 編集ページ
-@app.route("/products/<int:id>/edit")
-@login_required
-def edit_product(id):
-    conn = get_db_connection()
-    product = conn.execute(
-        "SELECT * FROM products WHERE id = ?", (id,)
-    ).fetchone()
-    conn.close()
-    return render_template("product_form.html", product=product)
-
-
-# 更新処理
 @app.route("/")
 @login_required
 def product_list():
@@ -152,9 +133,8 @@ def product_list():
         last_updated=last_updated
     )
 
-
 # =========================
-# 削除（Delete）
+# 削除
 # =========================
 @app.route("/products/<int:id>/delete", methods=["POST"])
 @login_required
@@ -166,7 +146,7 @@ def delete_product(id):
     return redirect(url_for("product_list"))
 
 # =========================
-# ユーザ登録・ログイン・ログアウト
+# ユーザ登録
 # =========================
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -196,6 +176,9 @@ def register():
 
     return render_template("register.html")
 
+# =========================
+# ログイン
+# =========================
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
@@ -204,11 +187,6 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        # 🔥 試行回数チェック（最初にやる）
-        if session.get("login_attempts", 0) >= 5:
-            error = "試行回数が多すぎます。少し時間をおいてください"
-            return render_template("login.html", error=error)
-
         conn = get_db_connection()
         user = conn.execute(
             "SELECT * FROM users WHERE email = ?",
@@ -216,34 +194,21 @@ def login():
         ).fetchone()
         conn.close()
 
-        # ログイン成功
         if user and check_password_hash(user["password_hash"], password):
-
-            session.clear()  # 🔥 超重要
-
+            session.clear()
             session["user_id"] = user["id"]
             session["user_name"] = user["name"]
 
             flash("ようこそ！" + user["name"] + "さん")
-            
-            # 🔥 ここを追加！！！！
-            conn = get_db_connection()
-            conn.execute(
-                "INSERT INTO login_logs (user_id) VALUES (?)",
-                (user["id"],)
-            )
-            conn.commit()
-            conn.close()
-            
             return redirect(url_for("product_list"))
-
         else:
-            # 🔥 失敗時のみカウント
-            session["login_attempts"] = session.get("login_attempts", 0) + 1
             error = "メールアドレスまたはパスワードが間違っています"
 
     return render_template("login.html", error=error)
 
+# =========================
+# ログアウト
+# =========================
 @app.route("/logout")
 @login_required
 def logout():
@@ -251,6 +216,9 @@ def logout():
     flash("ログアウトしました")
     return redirect(url_for("login"))
 
+# =========================
+# リクエスト前処理
+# =========================
 @app.before_request
 def before_request():
     log_access()
@@ -259,6 +227,4 @@ def before_request():
 # 起動
 # =========================
 if __name__ == "__main__":
-    if not os.path.exists(DB_NAME):
-        init_db()
     app.run(debug=True)
