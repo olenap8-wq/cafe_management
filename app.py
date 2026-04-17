@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from flask import send_file
 
 app = Flask(__name__)
 
@@ -69,10 +70,11 @@ def get_db_connection():
 # =========================
 @app.route("/debug/export")
 def export_db():
-    import shutil
-    export_path = os.path.join(BASE_DIR, "export.db")
-    shutil.copy(DB_NAME, export_path)
-    return "DB exported!"
+    return send_file(
+        DB_NAME,
+        as_attachment=True,
+        download_name="cafe_management.db"
+    )
 
 # =========================
 # ログイン必須
