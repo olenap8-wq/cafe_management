@@ -24,23 +24,21 @@ print("DBパス:", DB_NAME)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-key")
 
 # =========================
-# DB初期化（安全版）
+# DB初期化
 # =========================
-init_db()
+def init_db():
+    print("🔥 init_db 実行")
     with sqlite3.connect(DB_NAME) as conn:
         with open(os.path.join(BASE_DIR, 'database/schema.sql')) as f:
             conn.executescript(f.read())
 
-print("init_db 実行開始")
-init_db()
-print("init_db 実行完了")
-
-# 🔥 超重要：テーブルが存在しない場合だけ初期化
+# =========================
+# DB初期化チェック（超重要）
+# =========================
 def ensure_db_initialized():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # usersテーブルがあるかチェック
     cursor.execute("""
         SELECT name FROM sqlite_master 
         WHERE type='table' AND name='users';
@@ -48,14 +46,14 @@ def ensure_db_initialized():
     result = cursor.fetchone()
 
     if result is None:
-        print("テーブルが存在しない → DB初期化します")
+        print("❌ usersテーブルなし → DB初期化する")
         init_db()
     else:
-        print("DBは既に初期化済み")
+        print("✅ DB OK")
 
     conn.close()
 
-# 🔥 アプリ起動時に必ずチェック
+# 🔥 起動時に必ず実行（Render対応）
 ensure_db_initialized()
 
 # =========================
@@ -245,20 +243,6 @@ def logout():
 # =========================
 @app.before_request
 def before_request():
-    ensure_db_initialized
-        conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT name FROM sqlite_master 
-        WHERE type='table' AND name='users';
-    """)
-
-    if cursor.fetchone() is None:
-        print("usersテーブルなし → 強制初期化")
-        init_db()
-
-    conn.close()
     log_access()
 
 # =========================
