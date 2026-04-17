@@ -48,11 +48,11 @@ def ensure_db_initialized():
     """)
     result = cursor.fetchone()
 
-    if result is None:
-        print("❌ usersテーブルなし → DB初期化する")
+    if not os.path.exists(DB_NAME):
+        print("DBファイルなし → 初期化")
         init_db()
     else:
-        print("✅ DB OK")
+        print("DBファイルあり → スキップ")
 
     conn.close()
 
